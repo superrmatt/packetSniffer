@@ -1,21 +1,5 @@
-#protocol number 179, unassigned
-#protocl 0 = IPV6 hop by hop
-#	not sure what it is, every piece of data is 0
-# 	checksum = 0 
-# 	header = 0
-# 	options = null
-# 	len is 65535, very long?
-# 	parent undefined
-# 	src/dest ip both = 0.0.0.0
-# 	netpacket::IP
-
 use Net::Pcap;
-use NetPacket::Ethernet;
-use NetPacket::IP;
-use NetPacket::TCP;
-use NetPacket::UDP;
-use NetPacket::ICMP;
-use NetPacket::IGMP;
+use NetPacket;
 use DBI;
 use DBD::mysql;
 
@@ -24,9 +8,11 @@ use warnings;
 use Data::Dumper;
 
 
+#index variable used to determine how many packets the program will scan.
 my $i;
 $i = 626918;
 
+#this can easily be changed to while(true) for continuous run until interupted by a kill command.
 while ($i < 10000000){
 
 	my $err = '';
@@ -48,6 +34,7 @@ while ($i < 10000000){
 
 	print "Done.\n";
 
+	#parses payload into a human readable format.
 	sub parsePayload{
 	   my($payload, $text) = @_;
    	   my $data = unpack("H*",$payload);
@@ -55,7 +42,7 @@ while ($i < 10000000){
 	}
 
 
-
+	# you guessed it, get payload. Grabs the packet from cyberspace.
 	sub getPayload{
 	   my ($userdata, $header, $packet) = @_;
 
@@ -67,6 +54,8 @@ while ($i < 10000000){
 	print "Dumper = \n";
 	print Dumper $ip, "\n\n\n";
 	print "-------------------------\n\n\n";
+
+	#FYI, there are probably a few more variables I am missing here which are assocaited with a network packet header.
 	my $num;
 	my $ver;
 	my $proto;
@@ -82,7 +71,7 @@ while ($i < 10000000){
 	my $id;
 	my $flags;
 
-
+	#assign packet header vars to our vars.
 	$ver = $ip->{'ver'};
 	$proto = $ip->{'proto'};
 	$dest_ip =$ip->{'dest_ip'};
@@ -97,12 +86,12 @@ while ($i < 10000000){
 	$id = $ip->{'id'};
 	$flags = $ip->{'flags'};
    
-
 	my $connection;
 	my $query;
 	my $result;
 
-	$connection = DBI->connect("DBI:mysql:real_IDS:127.0.0.1", "root", "password");
+	#open connection to a DB and insert all of the values. Make sure the DB mirrors these values, or change them as you see fit.
+	$connection = DBI->connect(<DBNAME example to right> -> "DBI:mysql:<name>:127.0.0.1", <username>, <password>);
 	$query = $connection->prepare("insert into packets values ($i, $ver, $proto, '$dest_ip', $chksum, '$src_ip', $hlen, $ttl, $foffset, '$options', $len, $tos, $id, $flags);");
 	$result = $query->execute();
    
