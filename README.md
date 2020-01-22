@@ -9,8 +9,8 @@ This sniffer will grab all traffic in your network. I have tested it on enterpri
 <br/>
 Feel free to use, if you are going to use, don't forget to update the information for the database, its username, and its password. Else it obviously won't insert into database.<br/>
 <br/>
-the var i is a set number, to tell the packet sniffer how many times to run. While i < (some value) it will run.
-Both i and (some vlaue) can be easily edited to suit one's needs. For continuous run until interupted with a kill command (^c for example), simply edit the while loop to say while(true){}. <br/>
+The variable i is a set number, to tell the packet sniffer how many times to run. While i < (some value) it will run.
+Both i and (some value) can be easily edited to suit one's needs. For continuous run until interupted with a kill command (^c for example), simply edit the while loop to say while(true){}. <br/>
 <br/>
 The primary purposes I used this for were:
     - Network enumeration for penetration tests.
